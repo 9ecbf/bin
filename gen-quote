@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# sudo apt-get install jq
+
+endpoint=https://api.quotable.io/random
+
+root=$HOME
+[ ! -z "$QUOTE_ROOT" ] && root=$QUOTE_ROOT
+
+json=$root/quote.json
+log=$root/quote.log
+
+# Shows the current time.
+now() {
+    date "+%Y/%m/%d %H:%M:%S"
+}
+
+# Generates a new quote then saves into $json.
+generate() {
+    echo "" > $json
+    curl -s $endpoint > $json
+
+    content=$(jq -r '.content' $json)
+    author=$(jq -r '.author' $json)
+
+    echo "[$(now)] $content - $author" >> $log
+}
+
+help() {
+    echo "Fetch a random quote from $endpoint and save it."
+    echo ""
+    echo "Usage: QUOTE_ROOT=[dir] gen-quote"
+    echo "    dir    the path of the directory for saving the quote (default: $HOME)"
+    echo ""
+    echo "Dependencies:"
+    echo "    jq from apt-get"
+}
+
+[ -f "$(which jq)" ] && generate || help

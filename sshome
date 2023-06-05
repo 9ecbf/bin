@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# This script is to create a remote tunnel to the 'tuanm.dev' server.
+# Ensure we can connect to the server before running this script.
+
+#command="ssh -R 9696:localhost:22 tuanm.dev"
+#disconnect_short_key="^D"
+command="autossh -N -R 9696:localhost:22 tuanm.dev"
+disconnect_short_key="^C"
+
+help() {
+    echo "Usage: sshome start"
+}
+
+connect() {
+    echo "Connected."
+    echo "Press $disconnect_short_key to disconnect."
+    echo "Press $disconnect_short_key ^C to exit."
+    bash -c "$command"
+    echo "Reconnecting..."
+}
+
+start() {
+    while true; do
+        connected=`ps aux | grep "$command" | grep -v "grep"`
+        if test -n $connected; then
+            connect
+        fi
+        for i in {5..1}; do
+            echo -en "$i\r"; sleep 1
+        done
+    done
+}
+
+if [ "$1" = "start" ]; then
+    start
+else
+    help
+fi

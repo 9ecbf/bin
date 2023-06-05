@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# sudo apt-get install jq
+
+endpoint=https://api.quotable.io/random
+
+while getopts v opt; do
+    case "${opt}" in
+        v) verbose=1;;
+    esac
+done
+
+root=$HOME
+[ ! -z "$QUOTE_ROOT" ] && root=$QUOTE_ROOT
+
+json=$root/quote.json
+log=$root/quote.log
+
+# Shows the current time.
+now() {
+    date "+%Y/%m/%d %H:%M:%S"
+}
+
+# Generates a new quote then saves into $json.
+generate() {
+    [ -f "$(which gen-quote)" ] && gen-quote
+}
+
+# Counts total characters in the $json.
+count() {
+    text="$(cat $json)" && echo "${#text}"
+}
+
+# Returns 0 if the $json is valid.
+status() {
+    cat $json | jq -e . >/dev/null 2>&1; echo "${PIPESTATUS[1]}"
+}
+
+# Parses something from $json.
+parse() {
+    jq -e $@ $json 2>/dev/null
+}
+
+help() {
+    echo "Fetch a random quote from $endpoint and show it."
+    echo ""
+    echo "Usage: QUOTE_ROOT=[dir] quote"
+    echo "    dir    the path of the directory for saving the quote (default: $HOME)"
+    echo ""
+    echo "Dependencies:"
+    echo "    jq from apt-get"
+}
+
+[ -f "$(which jq)" ] && [ ! -f "$json" ] && generate
+[ -f "$(which jq)" ] && [ -f "$json" ] && \
+    [ "$(count)" -ne "0" ] && [ "$(status)" = "0" ] && \
+        parse '.content' && \
+        echo -n "- " && \
+        parse -r '.author' || (test ! -z $verbose && help)

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# This script is to clone a repository from
+# https://github.com/Tuanm?tab=repositories
+
+CODESPACE=/9ecbf/git/github.com/Tuanm
+WORKSPACE=$(realpath $(pwd))
+
+if [ ! -d $CODESPACE ]; then
+    echo "Codespace $CODESPACE doesn't exist!"
+elif [ ! -z $1 ]; then
+    cd $CODESPACE
+    git clone git@github.com:Tuanm/$1.git
+    cd $WORKSPACE
+else
+    echo "Please specify a repository!"
+fi
+

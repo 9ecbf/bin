@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# sudo apt-get install jq
+# sudo npm install -g clipboard-cli
+
+endpoint=https://file.io
+
+red='\e[;31m'
+green='\e[;32m'
+yellow='\e[;33m'
+white='\e[m'
+
+help() {
+    echo "Upload a file to $endpoint."
+    echo ""
+    echo "Usage: upload <file>"
+    echo "    file    the path of the file needs uploading"
+    echo ""
+    echo "Dependencies:"
+    echo "    jq from apt-get"
+    echo "    clipboard-cli from npm (optional)"
+}
+
+finish() {
+    echo -e "${green}Your file is successfully uploaded!${white}"
+    echo ""
+    echo "  Name: $1"
+    echo "  Link: $2"
+    echo "  Expires: $3"
+    echo ""
+    if [ ! -z $4 ]; then
+        echo -e "${yellow}P/s: The link has been copied to your clipboard.${white}"
+    fi
+}
+
+error() {
+    echo -e "${red}Failed!${white}"
+}
+
+start() {
+    uploaded=$(curl -s -X POST -F "file=@\"$1\"" "$endpoint")
+    name=$(echo "$uploaded" | jq -r ".name")
+    link=$(echo "$uploaded" | jq -r ".link")
+    expires=$(echo "$uploaded" | jq -r ".expires")
+    copied=
+    if [ ! -z $link ]; then
+        [ -L "$(which clipboard)" ] && echo -n "$link" | clipboard && copied=1
+        finish $name $link $expires $copied
+    else
+        error
+    fi
+}
+
+[ -f "$(which jq)" ] && [ -f "$1" ] && start $1 || help

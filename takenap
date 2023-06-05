@@ -1,0 +1,13 @@
+#!/bin/bash
+
+help() {
+    echo "May we take a nap?"
+}
+
+if [ -z $1 ]; then
+    help
+else
+    trap '' 2
+    sleep $1
+    trap 2
+fi
