@@ -3,9 +3,9 @@
 # This script is to create a remote tunnel to the 'tuanm.dev' server.
 # Ensure we can connect to the server before running this script.
 
-#command="ssh -R 9696:localhost:22 tuanm.dev"
+#command="ssh -R 6969:localhost:22 tuanm.dev"
 #disconnect_short_key="^D"
-command="autossh -N -R 9696:localhost:22 tuanm.dev"
+command="autossh -N -R 6969:localhost:22 tuanm.dev"
 disconnect_short_key="^C"
 
 help() {

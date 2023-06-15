@@ -13,6 +13,6 @@ else
     ver=$(date "+%Y%m%d%H%M%S")
     target=$target/$dir
     [ ! -d "$target" ] && mkdir -p "$target"
-    cp "$dir/$short" "$target/$short.$ver" && echo "Backup '$short.$ver' created at '$target'."
+    cp -r "$dir/$short" "$target/$short.$ver" && echo "Backup '$short.$ver' created at '$target'."
 fi
 
