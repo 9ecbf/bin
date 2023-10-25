@@ -1,0 +1,42 @@
+#!/bin/bash
+
+usage() {
+    echo "Update Cloudflare DNS."
+    echo ""
+    echo "Usage: update-cloudflare-dns -t <token> -z <zone> -d <domain>"
+    echo "       token       the Cloudflare API token"
+    echo "       zone        the Cloudflare Zone ID"
+    echo "       domain      the domain name"
+}
+
+base_url=https://api.cloudflare.com/client/v4
+check_ip_url=http://api.ipify.org
+
+while getopts ":t:z:d:" opt; do
+    case "${opt}" in
+        t) api_token="${OPTARG}";;
+        z) zone_id="${OPTARG}";;
+        d) domain_name="${OPTARG}";;
+    esac
+done
+
+if [ -z "$api_token" ] || [ -z "$zone_id" ] || [ -z "$domain_name" ]; then
+    usage
+    exit 1
+fi
+
+invoke_cloudflare_api() {
+    curl -sL -H "Content-Type: application/json" -H "Authorization: Bearer $api_token" $@
+}
+
+public_ip=$(curl -sL $check_ip_url)
+record_id=$(
+    invoke_cloudflare_api "$base_url/zones/$zone_id/dns_records" | \
+    jq --arg name "$domain_name" -r -c '.result | .[] | select(.type == "A" and .name == $name) | .id'
+)
+ttl=900
+request="{\"id\":\"$record_id\",\"type\":\"A\",\"name\":\"$domain_name\",\"content\":\"$public_ip\",\"ttl\":$ttl,\"proxied\":false}"
+
+echo $request | jq
+response=$(invoke_cloudflare_api -X PUT "$base_url/zones/$zone_id/dns_records/$record_id" -d $request)
+echo $response | jq
