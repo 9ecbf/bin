@@ -7,7 +7,9 @@ help() {
 if [ -z $1 ]; then
     help
 else
+    trap '' SIGTSTP
     trap '' 2
     sleep $1
     trap 2
+    trap SIGTSTP
 fi
