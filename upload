@@ -35,6 +35,7 @@ finish() {
 
 error() {
     echo -e "${red}Failed!${white}"
+    exit 1
 }
 
 start() {
