@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# https://github.com/go-toast/toast
-
-/mnt/d/Program\ Files/toast64/bin/toast.exe $@
