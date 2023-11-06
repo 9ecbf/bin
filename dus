@@ -1,0 +1,12 @@
+#!/bin/bash
+
+help() {
+    echo "Sort children of a directory by their disk usages."
+    echo ""
+    echo "Usage: dus <dir>"
+    echo "           <dir>  the directory"
+}
+
+[ -z "$1" ] && help && exit 1
+
+du -a -BM -d1 $(realpath "$1") | sort -n
