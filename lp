@@ -2,4 +2,4 @@
 
 # Lists all listening ports.
 
-sudo netstat -tulpn | grep LISTEN
+sudo netstat -tulpna | grep LISTEN
