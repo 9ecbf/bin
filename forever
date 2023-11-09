@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ ! -z $@ ] && while true; do
+[ ! -z "$1" ] && while true; do
     $@
     sleep 1
 done || echo "Nothing is forever."

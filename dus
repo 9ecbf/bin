@@ -9,4 +9,4 @@ help() {
 
 [ -z "$1" ] && help && exit 1
 
-du -a -BM -d1 $(realpath "$1") | sort -n
+sudo du -a -BM -d1 $(realpath "$1") | sort -n

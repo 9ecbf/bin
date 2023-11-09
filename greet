@@ -26,4 +26,4 @@ reset() {
     tput sgr0
 }
 
-clear && echo -e "\n$(reset)Hi $(color 10)$(whoami)$(reset)! $(color 14)Have a nice day!$(reset)"
+echo -e "\n$(reset)Hi $(color 10)$(whoami)$(reset)! $(color 14)Have a nice day!$(reset)"
