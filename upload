@@ -25,10 +25,11 @@ finish() {
     echo -e "${green}Your file is successfully uploaded!${white}"
     echo ""
     echo "  Name: $1"
-    echo "  Link: $2"
-    echo "  Expires: $3"
+    echo "  Size: $2"
+    echo "  Link: $3"
+    echo "  Expires: $4"
     echo ""
-    if [ ! -z $4 ]; then
+    if [ ! -z $5 ]; then
         echo -e "${yellow}P/s: Link has been copied to your clipboard.${white}"
     fi
 }
@@ -41,12 +42,13 @@ error() {
 start() {
     uploaded=$(curl -s -X POST -F "file=@\"$1\"" "$endpoint")
     name=$(echo "$uploaded" | jq -r ".name")
+    size=$(echo "$uploaded" | jq -r ".size")
     link=$(echo "$uploaded" | jq -r ".link")
     expires=$(echo "$uploaded" | jq -r ".expires")
     copied=
     if [ ! -z $link ]; then
         [ -L "$(which clipboard)" ] && echo -n "$link" | clipboard && copied=1
-        finish $name $link $expires $copied
+        finish $name $size $link $expires $copied
     else
         error
     fi
