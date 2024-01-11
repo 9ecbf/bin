@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wsl_distro_name=$1
+echo "Switching to distribution '$wsl_distro_name'..."
+/mnt/c/Windows/System32/wsl.exe -d $wsl_distro_name --cd ~
