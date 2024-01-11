@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#sudo apt install socat
+
+help() {
+    echo "Forward traffic to a Docker container using socat."
+    echo ""
+    echo "Usage: $(basename $0) <container> <port> [<host port>]"
+    echo "       container    the name or id of the Docker container"
+    echo "       port         the listening port of the Docker container"
+    echo "       host port    the listening port of the host (optional)"
+    exit 1
+}
+
+[ -z $2 ] && help
+container_name=$1
+container_port=$2
+
+container_address=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $container_name)
+[ -z $container_address ] && exit 1
+host_port=$3
+[ -z $host_port ] && host_port=$container_port
+
+
+echo "Forwarding traffic from localhost:$host_port to $container_address:$container_port..."
+sudo socat TCP-LISTEN:$host_port,fork TCP:$container_address:$container_port
