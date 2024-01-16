@@ -1,3 +1,15 @@
 #!/bin/bash
 
-realpath $(pwd)
+color_source=$(which color) # /9ecbf/bin/color
+current_dir=$(realpath $(pwd))
+
+wsl_distro_suffix() {
+    [ ! -z "$WSL_DISTRO_NAME" ] && echo -n "($WSL_DISTRO_NAME)"
+}
+
+if [ -f "$color_source" ]; then
+    source $color_source
+    echo -e "$(reset)$current_dir$(color 8) $(wsl_distro_suffix)$(reset)"
+else
+    echo -e "$current_dir $(wsl_distro_suffix)"
+fi
