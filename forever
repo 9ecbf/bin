@@ -1,6 +1,8 @@
 #!/bin/bash
 
+interval=${INTERVAL:-1}
+
 [ ! -z "$1" ] && while true; do
     $@
-    sleep 1
+    sleep $interval
 done || echo "Nothing is forever."
