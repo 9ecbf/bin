@@ -1,0 +1,5 @@
+#!/bin/bash
+
+[ ! -d /tmp/log/ ] && mkdir -p /tmp/log/
+
+INTERVAL=30m nohup forever echo "$(now) I'm alive!" >> /tmp/log/wslnonstop.log &
