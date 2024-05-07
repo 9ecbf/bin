@@ -1,6 +1,10 @@
 #!/bin/bash
 
 wsl_distro_name=$1
-[ -z "$wsl_distro_name" ] && echo "You must specify a distribution." && exit 1
+if [ -z "$wsl_distro_name" ]; then
+    closest_peer=$(echo "$WSL_DISTRO_PEERS" | jq -r ".[0]")
+    [ "$closest_peer" = "" ] && echo "You must specify a distribution." && exit 1
+    wsl_distro_name="$closest_peer"
+fi
 echo "Switching to distribution '$wsl_distro_name'..."
 /mnt/c/Windows/System32/wsl.exe -d $wsl_distro_name --cd ~
