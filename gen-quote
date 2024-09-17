@@ -18,7 +18,7 @@ now() {
 # Generates a new quote then saves into $json.
 generate() {
     echo "" > $json
-    curl -s $endpoint > $json
+    curl -s -k $endpoint > $json
 
     content=$(jq -r '.content' $json)
     author=$(jq -r '.author' $json)
