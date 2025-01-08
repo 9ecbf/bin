@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+find_and_delete() {
+    status=$1
+    kubectl get pods --all-namespaces | grep $status | awk '{print $2 " --namespace=" $1}' | xargs kubectl delete pods
+}
+
+
+find_and_delete Evicted
+find_and_delete ContainerStatusUnknown
+find_and_delete Error
+find_and_delete Completed
+
