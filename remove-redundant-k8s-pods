@@ -7,6 +7,8 @@ find_and_delete() {
 }
 
 
+find_and_delete OutOfcpu
+find_and_delete Unknown
 find_and_delete Evicted
 find_and_delete ContainerStatusUnknown
 find_and_delete Error
