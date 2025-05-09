@@ -1,0 +1,18 @@
+#!/bin/bash
+
+deployment_name=$1
+
+usage() {
+  echo "Show logs of all running pods of a given deployment."
+  echo ""
+  echo "Usage:     kubectlog <deployment>"
+  echo "                     <deployment>   name of the deployment"
+  echo ""
+}
+
+if [ -z $deployment_name ]; then
+  usage
+  exit
+fi
+
+kubectl logs -f --selector=$(kubectl describe deployments/$deployment_name | grep "Selector:" | awk '{ print $2 }') ${@:2}
