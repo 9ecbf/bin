@@ -1,0 +1,17 @@
+#!/bin/bash
+
+repo="Tuanm/dev"
+action=$1
+shift 1
+
+if [ "$action" = "stop" ]; then
+  gh codespace stop --repo $repo
+elif [ "$action" = "cp" ]; then
+  gh codespace cp --repo $repo $@
+elif [ "$action" = "ssh" ]; then
+  gh codespace ssh --repo $repo
+elif [ "$action" = "port-forward" ]; then
+  gh codespace ports forward --repo $repo $@
+else
+  gh codespace view --repo $repo
+fi
