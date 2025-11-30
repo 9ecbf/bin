@@ -1,23 +1,24 @@
 #!/bin/bash
 
-# This script is to create a remote tunnel to the 'tuanm.dev' server.
+# This script is to create a remote tunnel to 'tuanm.dev' server.
 # Ensure we can connect to the server before running this script.
+# Local HTTP server will then be exposed at https://demo.tuanm.dev.
 
-#command="ssh -R 6969:localhost:22 tuanm.dev"
-#disconnect_short_key="^D"
-command="autossh -N -R 6969:localhost:22 tuanm.dev"
+remote_port=6969
+local_port=${2:-80}
+command="autossh -N -R localhost:$remote_port:localhost:$local_port tuanm.dev"
 disconnect_short_key="^C"
 
 help() {
-    echo "Usage: sshome start"
+    echo "Usage: sshome start [port]"
 }
 
 connect() {
-    echo "Connected."
+    echo "Exposing http://localhost:$local_port to https://demo.tuanm.dev..."
     echo "Press $disconnect_short_key to disconnect."
-    echo "Press $disconnect_short_key ^C to exit."
+    echo "Press $disconnect_short_key^C to exit."
     bash -c "$command"
-    echo "Reconnecting..."
+    echo -e "\nReconnecting..."
 }
 
 start() {
@@ -37,3 +38,4 @@ if [ "$1" = "start" ]; then
 else
     help
 fi
+
