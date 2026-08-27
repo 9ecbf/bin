@@ -11,5 +11,7 @@ help() {
 [ ! -f "$(which tmux)" ] && echo "'tmux' not found" && exit 1
 [ -z "$1" ] && help && exit 1
 
+[ "$1" == "--" ] && shift 1 && tmux attach -t "'$*'" && exit 0 || exit 1
+
 [ ! -z "$(which $1)" ] && tmux new -s "'$*'" -d "$@" \
     || (echo "program '$1' not found" && exit 1)
