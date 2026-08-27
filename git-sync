@@ -1,0 +1,15 @@
+#!/bin/bash
+
+dir=$1
+branch=${2:-main}
+
+[ ! -d "$dir" ] && echo "which dir??" && exit 1
+
+cd "$dir"
+
+git checkout $branch 2>/dev/null || git checkout -b $branch --track $(git remote)/$branch
+
+git add .
+git commit -m "chore(sync): $(date +'%s')" || echo "commit failed"
+git push -f $(git remote) $branch || echo "push failed"
+
