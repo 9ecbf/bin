@@ -1,18 +1,38 @@
 #!/bin/bash
 
-# This script is to clone a repository from
-# https://github.com/Tuanm?tab=repositories
+# This script is to clone a repository from a Git server
+# into directory $HOME/git/$GIT_SERVER/$OWNER/.
 
-CODESPACE=/9ecbf/git/github.com/Tuanm
-WORKSPACE=$(realpath $(pwd))
+SERVER="${GIT_SERVER:-github.com}"
+CODESPACE=$HOME/git/$SERVER
+REPO=$1
+
+function log() {
+    LEVEL=${2:-DEBUG}
+    MSG=$1
+    if [ "$LEVEL" == "DEBUG" ]; then
+        [ "$DEBUG" == "1" ] && MSG="debug: $MSG" || MSG=""
+    fi
+    [ ! -z "$MSG" ] && echo $MSG
+    [ "$LEVEL" == "ERROR" ] && exit 1
+}
+
+[ -z $REPO ] && log "repo missing" ERROR
+
+log "using server $SERVER"
 
 if [ ! -d $CODESPACE ]; then
-    echo "Codespace $CODESPACE doesn't exist!"
-elif [ ! -z $1 ]; then
-    cd $CODESPACE
-    git clone git@github.com:Tuanm/$1.git
-    cd $WORKSPACE
-else
-    echo "Please specify a repository!"
+    log "creating codespace $CODESPACE"
+    mkdir -p $CODESPACE
+    log "codespace $CODESPACE created"
 fi
 
+[ -d "$CODESPACE/$REPO" ] && log "dir $CODESPACE/$REPO exists" ERROR
+
+CWD=$(realpath $(pwd))
+log "using codespace $CODESPACE"
+cd $CODESPACE &&
+log "cloning repo $SERVER:$REPO" INFO
+git clone git@$SERVER:$REPO.git
+log "repo $SERVER:$REPO cloned" INFO
+cd $CWD
